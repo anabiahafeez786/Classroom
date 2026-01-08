@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/outer_circle" />
+
+    <item
+        android:drawable="@drawable/inner_circle"
+        android:gravity="center" />
+
+    <item
+        android:drawable="@drawable/ic_home_white"
+        android:gravity="center"
+        android:width="40dp"
+        android:height="40dp" />
+
+</layer-list>
