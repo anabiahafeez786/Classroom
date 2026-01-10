@@ -23,30 +23,33 @@ public class SplashActivity extends AppCompatActivity {
 
         ImageView logo = findViewById(R.id.gifLogo);
 
-        // Load GIF / Logo
-        Glide.with(this).load(R.drawable.classroom_logo).into(logo);
+        // Load logo / GIF
+        Glide.with(this)
+                .load(R.drawable.classroom_logo)
+                .into(logo);
 
-        // Animation (unchanged)
-        logo.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                logo.getViewTreeObserver().removeOnPreDrawListener(this);
+        // Animation
+        logo.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        logo.getViewTreeObserver().removeOnPreDrawListener(this);
 
-                float startOffset = dp(140);
-                logo.setTranslationY(startOffset);
-                logo.setAlpha(0f);
+                        float startOffset = dp(140);
+                        logo.setTranslationY(startOffset);
+                        logo.setAlpha(0f);
 
-                logo.animate()
-                        .translationY(0f)
-                        .alpha(1f)
-                        .setDuration(900)
-                        .setInterpolator(new DecelerateInterpolator(1.8f))
-                        .start();
-                return true;
-            }
-        });
+                        logo.animate()
+                                .translationY(0f)
+                                .alpha(1f)
+                                .setDuration(900)
+                                .setInterpolator(new DecelerateInterpolator(1.8f))
+                                .start();
+                        return true;
+                    }
+                });
 
-        // 🔑 AUTO-LOGIN CHECK AFTER SPLASH
+        // 🔑 SESSION CHECK AFTER SPLASH
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
             SharedPreferences prefs =
@@ -54,15 +57,29 @@ public class SplashActivity extends AppCompatActivity {
 
             boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
 
+            Intent intent;
+
             if (isLoggedIn) {
-                // User already logged in → Product
-                startActivity(new Intent(SplashActivity.this, ProductActivity.class));
+                // User already logged in
+                intent = new Intent(
+                        SplashActivity.this,
+                        ProductActivity.class
+                );
             } else {
-                // New user → Signup
-                startActivity(new Intent(SplashActivity.this, SignupActivity.class));
+                // New user
+                intent = new Intent(
+                        SplashActivity.this,
+                        SignupActivity.class
+                );
             }
 
+            // 🔒 IMPORTANT FLAGS
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            startActivity(intent);
             finish();
+
         }, 3000);
     }
 

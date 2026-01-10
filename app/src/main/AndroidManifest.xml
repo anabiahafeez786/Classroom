@@ -8,6 +8,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Classroom">
 
+        <!-- 🔹 FORGOT PASSWORD (ADDED) -->
+        <activity android:name=".ForgotPasswordActivity" />
+
         <activity android:name=".JoinClassActivity" />
         <activity android:name=".CreateClassActivity" />
         <activity android:name=".DataReceiveActivity" />
@@ -17,6 +20,7 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".SignupActivity" />
 
+        <!-- LAUNCHER -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -27,7 +31,5 @@
         </activity>
 
     </application>
-
-
 
 </manifest>

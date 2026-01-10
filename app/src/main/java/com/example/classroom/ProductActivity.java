@@ -20,6 +20,18 @@ public class ProductActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 🔐 SESSION CHECK (IMPORTANT)
+        SharedPreferences prefs =
+                getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+
+        if (!isLoggedIn) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_product);
 
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -74,24 +86,25 @@ public class ProductActivity extends AppCompatActivity {
             startActivity(new Intent(this, JoinClassActivity.class));
         });
 
-        // 🔴 LOGOUT FUNCTIONALITY (IMPORTANT)
+        // 🔴 LOGOUT
         btnLogout.setOnClickListener(v -> {
 
-            // Clear login session
-            SharedPreferences prefs =
-                    getSharedPreferences("loginPrefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
+            SharedPreferences.Editor editor =
+                    getSharedPreferences("loginPrefs", MODE_PRIVATE).edit();
             editor.clear();
             editor.apply();
 
-            // Go to LoginActivity
-            Intent intent = new Intent(ProductActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Intent intent = new Intent(
+                    ProductActivity.this,
+                    LoginActivity.class
+            );
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         });
 
-        // Handle back button for drawer
+        // Back button handling (drawer)
         getOnBackPressedDispatcher().addCallback(this,
                 new OnBackPressedCallback(true) {
                     @Override

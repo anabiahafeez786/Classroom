@@ -20,6 +20,18 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 🔐 SESSION CHECK (IMPORTANT)
+        SharedPreferences prefs =
+                getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
+
+        if (isLoggedIn) {
+            startActivity(new Intent(this, ProductActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_login);
 
         etUser = findViewById(R.id.etLoginUser);   // FULL EMAIL
@@ -28,6 +40,9 @@ public class LoginActivity extends AppCompatActivity {
 
         // 🔹 SIGNUP LINK
         TextView tvSignupLink = findViewById(R.id.tvSignupLink);
+
+        // 🔹 FORGOT PASSWORD LINK
+        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
 
         dbRef = FirebaseDatabase.getInstance().getReference("users");
 
@@ -38,11 +53,17 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, SignupActivity.class));
             finish();
         });
+
+        // 🔹 GO TO FORGOT PASSWORD
+        tvForgotPassword.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this,
+                    ForgotPasswordActivity.class));
+        });
     }
 
     private void login() {
 
-        String email = text(etUser);   // user types FULL email
+        String email = text(etUser);
         String pass  = text(etPass);
 
         if (email.isEmpty()) {
@@ -60,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // READ from Firebase
+        // 🔹 READ FROM FIREBASE
         dbRef.orderByChild("email").equalTo(email)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -81,12 +102,11 @@ public class LoginActivity extends AppCompatActivity {
                                         getSharedPreferences("loginPrefs", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = prefs.edit();
                                 editor.putBoolean("isLoggedIn", true);
-                                editor.putString("userId", user.userId);
+                                editor.putString("userEmail", email);
                                 editor.apply();
 
                                 toast("Login successful");
 
-                                // GO TO PRODUCT SCREEN
                                 Intent intent = new Intent(
                                         LoginActivity.this,
                                         ProductActivity.class
