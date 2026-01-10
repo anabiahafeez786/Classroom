@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class ProductActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
@@ -21,7 +23,7 @@ public class ProductActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 🔐 SESSION CHECK (IMPORTANT)
+        // 🔐 SESSION CHECK
         SharedPreferences prefs =
                 getSharedPreferences("loginPrefs", MODE_PRIVATE);
         boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
@@ -34,61 +36,67 @@ public class ProductActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_product);
 
+        // ================== VIEWS ==================
         drawerLayout = findViewById(R.id.drawerLayout);
 
-        ImageView ivMenu       = findViewById(R.id.ivMenu);
+        ImageView ivMenu = findViewById(R.id.ivMenu);
+
         TextView tvClasses     = findViewById(R.id.tvMenuClasses);
         TextView tvCalendar    = findViewById(R.id.tvMenuCalendar);
         TextView tvFilters     = findViewById(R.id.tvMenuFilters);
         TextView tvStudentInfo = findViewById(R.id.tvMenuStudentInfo);
         TextView tvCreateClass = findViewById(R.id.tvMenuCreateClass);
         TextView tvJoinClass   = findViewById(R.id.tvMenuJoinClass);
-        Button btnLogout       = findViewById(R.id.btnLogout);
 
-        // ☰ Open drawer
+        Button btnLogout = findViewById(R.id.btnLogout);
+        FloatingActionButton fabQr = findViewById(R.id.fabQr);
+
+        // ================== DRAWER OPEN ==================
         ivMenu.setOnClickListener(v ->
                 drawerLayout.openDrawer(GravityCompat.START)
         );
 
-        // Classes
+        // ================== DRAWER CLICKS ==================
         tvClasses.setOnClickListener(v -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
             Toast.makeText(this, "Classes clicked", Toast.LENGTH_SHORT).show();
-            drawerLayout.closeDrawer(GravityCompat.START);
         });
 
-        // Calendar
         tvCalendar.setOnClickListener(v -> {
-            Toast.makeText(this, "Calendar clicked", Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.START);
+            Toast.makeText(this, "Calendar clicked", Toast.LENGTH_SHORT).show();
         });
 
-        // Class Info Filters
         tvFilters.setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
             startActivity(new Intent(this, ColorFragmentsActivity.class));
         });
 
-        // Student Info
         tvStudentInfo.setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
             startActivity(new Intent(this, DataSendActivity.class));
         });
 
-        // Create class
         tvCreateClass.setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
             startActivity(new Intent(this, CreateClassActivity.class));
         });
 
-        // Join class
         tvJoinClass.setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
             startActivity(new Intent(this, JoinClassActivity.class));
         });
 
-        // 🔴 LOGOUT
-        btnLogout.setOnClickListener(v -> {
+        // ================== QR SCAN ==================
+        fabQr.setOnClickListener(v ->
+                startActivity(new Intent(
+                        ProductActivity.this,
+                        QrScanActivity.class
+                ))
+        );
 
+        // ================== LOGOUT ==================
+        btnLogout.setOnClickListener(v -> {
             SharedPreferences.Editor editor =
                     getSharedPreferences("loginPrefs", MODE_PRIVATE).edit();
             editor.clear();
@@ -104,7 +112,7 @@ public class ProductActivity extends AppCompatActivity {
             finish();
         });
 
-        // Back button handling (drawer)
+        // ================== BACK PRESS ==================
         getOnBackPressedDispatcher().addCallback(this,
                 new OnBackPressedCallback(true) {
                     @Override

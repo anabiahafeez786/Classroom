@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- 📸 CAMERA PERMISSION FOR QR SCANNER -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- 📸 CAMERA FEATURE (TO AVOID WARNING) -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo"
@@ -8,19 +16,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Classroom">
 
-        <!-- 🔹 FORGOT PASSWORD (ADDED) -->
+        <!-- 🔐 AUTH / ACCOUNT -->
+        <activity android:name=".SignupActivity" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".ForgotPasswordActivity" />
 
+        <!-- 🏠 MAIN / HOME -->
+        <activity android:name=".ProductActivity" />
+
+        <!-- 📚 OTHER SCREENS -->
         <activity android:name=".JoinClassActivity" />
         <activity android:name=".CreateClassActivity" />
         <activity android:name=".DataReceiveActivity" />
         <activity android:name=".DataSendActivity" />
         <activity android:name=".ColorFragmentsActivity" />
-        <activity android:name=".ProductActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".SignupActivity" />
 
-        <!-- LAUNCHER -->
+        <activity android:name=".QrScanActivity" />
+        <activity android:name=".CustomCaptureActivity" />
+
+        <!-- 🚀 SPLASH (LAUNCHER) -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">
