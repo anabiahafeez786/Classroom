@@ -30,7 +30,7 @@ package com.example.classroom;
 
  public class AiTutorFragment extends Fragment {
 
-     private static final String API_KEY = "AIzaSyB86_6mPGPn6RDbzrfMznhQjGgA1g2JZsU";
+     private static final String API_KEY = BuildConfig.GEMINI_API_KEY;
      private static final String API_URL =
              "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=";
 

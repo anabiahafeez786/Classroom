@@ -634,6 +634,19 @@
                 android:textSize="18sp"
                 android:textColor="#333333" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D0D3DB" />
+        </LinearLayout>
+
+        <!-- 7. AI TUTOR / CHAT -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp">
+
             <TextView
                 android:id="@+id/tvMenuChat"
                 android:layout_width="match_parent"
@@ -641,9 +654,12 @@
                 android:gravity="center_vertical"
                 android:text="AI Tutor / Chat"
                 android:textSize="18sp"
-                android:textColor="#333333"
-                android:paddingHorizontal="24dp" />
+                android:textColor="#333333" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D0D3DB" />
         </LinearLayout>
 
 
