@@ -689,6 +689,36 @@
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
+    <!-- ===== BANNER AD CONTAINER ===== -->
+    <FrameLayout
+        android:id="@+id/adContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF">
+
+        <!-- Banner Ad -->
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+
+        <!-- ❌ CLOSE BUTTON -->
+        <ImageView
+            android:id="@+id/btnCloseAd"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end|top"
+            android:layout_margin="6dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:background="@android:color/transparent"
+            android:contentDescription="Close Ad" />
+    </FrameLayout>
+
+
+
     <!-- 🔲 QR SCAN BUTTON (BOTTOM RIGHT) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabQr"
