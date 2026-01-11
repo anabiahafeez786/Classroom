@@ -77,4 +77,8 @@ dependencies {
     implementation("com.google.ai.client.generativeai:generativeai:0.4.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.android.gms:play-services-ads:23.0.0")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+    implementation("com.google.firebase:firebase-messaging")
+
 }

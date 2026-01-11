@@ -19,14 +19,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Classroom">
 
-        <!-- 🔔 FIREBASE CLOUD MESSAGING SERVICE (REQUIRED) -->
-        <service
-            android:name=".MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
 
         <!-- 🔐 AUTH / ACCOUNT -->
         <activity android:name=".SignupActivity" />
