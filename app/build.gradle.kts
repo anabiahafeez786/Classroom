@@ -1,13 +1,20 @@
- plugins {
+import java.util.Properties // <--- REQUIRED IMPORT
+
+plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
 }
 
+// 1. LOAD THE KEY FROM LOCAL.PROPERTIES
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 android {
     namespace = "com.example.classroom"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.classroom"
@@ -18,16 +25,18 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-
-        buildFeatures {
-            buildConfig = true
-        }
-
+        // 2. INJECT THE KEY INTO BUILDCONFIG
+        // This takes the key from the file and puts it into Java
         buildConfigField(
             "String",
             "GEMINI_API_KEY",
-            "\"AIzaSyCjihBGcOrA7eJUZdRgW-_j92zF_w8rJdw\""
+            "\"${localProperties.getProperty("GEMINI_API_KEY")}\""
         )
+    }
+
+    // 3. ENABLE BUILDCONFIG
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -46,6 +55,7 @@ android {
 }
 
 dependencies {
+    // 4. CLEANED UP DEPENDENCIES (Removed the nested block error)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -55,24 +65,16 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
 
-    dependencies {
-        implementation("androidx.appcompat:appcompat:1.7.0")
-        implementation("com.google.android.material:material:1.12.0")
-        implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
-        implementation("androidx.appcompat:appcompat:1.7.0")
-
-        implementation("com.github.bumptech.glide:glide:4.16.0")
-        annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
-        implementation("com.journeyapps:zxing-android-embedded:4.3.0")
-
-        // Google Gemini AI
-        implementation("com.google.ai.client.generativeai:generativeai:0.4.0")
-
-        implementation("com.squareup.okhttp3:okhttp:4.12.0")
-
-        implementation("com.google.android.gms:play-services-ads:23.0.0")
-
-    }
+    // Google Gemini AI
+    implementation("com.google.ai.client.generativeai:generativeai:0.4.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
 }

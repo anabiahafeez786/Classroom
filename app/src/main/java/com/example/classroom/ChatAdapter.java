@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
-    ArrayList<Message> list;
+    private final ArrayList<Message> list;
 
     public ChatAdapter(ArrayList<Message> list) {
         this.list = list;
@@ -28,7 +28,19 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
-        holder.text.setText(list.get(position).message);
+
+        Message msg = list.get(position);
+
+        holder.text.setText(msg.message);
+
+        // ✅ FORCE BLACK COLOR (MAIN FIX)
+        holder.text.setTextColor(
+                holder.itemView.getContext().getColor(android.R.color.black)
+        );
+
+        // Optional: better readability
+        holder.text.setTextSize(15f);
+        holder.text.setPadding(16, 10, 16, 10);
     }
 
     @Override
@@ -37,6 +49,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     }
 
     static class ChatViewHolder extends RecyclerView.ViewHolder {
+
         TextView text;
 
         ChatViewHolder(@NonNull View itemView) {
