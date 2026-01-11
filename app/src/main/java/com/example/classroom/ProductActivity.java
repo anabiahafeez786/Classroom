@@ -48,6 +48,13 @@ public class ProductActivity extends AppCompatActivity {
         TextView tvCreateClass = findViewById(R.id.tvMenuCreateClass);
         TextView tvJoinClass   = findViewById(R.id.tvMenuJoinClass);
 
+        TextView tvMenuChat = findViewById(R.id.tvMenuChat);
+
+        tvMenuChat.setOnClickListener(v -> {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            startActivity(new Intent(ProductActivity.this, ChatActivity.class));
+        });
+
         Button btnLogout = findViewById(R.id.btnLogout);
         FloatingActionButton fabQr = findViewById(R.id.fabQr);
 

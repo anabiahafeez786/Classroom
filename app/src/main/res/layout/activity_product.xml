@@ -633,6 +633,17 @@
                 android:text="Join class"
                 android:textSize="18sp"
                 android:textColor="#333333" />
+
+            <TextView
+                android:id="@+id/tvMenuChat"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:text="AI Tutor / Chat"
+                android:textSize="18sp"
+                android:textColor="#333333"
+                android:paddingHorizontal="24dp" />
+
         </LinearLayout>
 
 

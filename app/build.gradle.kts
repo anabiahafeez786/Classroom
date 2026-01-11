@@ -17,6 +17,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
+        buildFeatures {
+            buildConfig = true
+        }
+
+        buildConfigField(
+            "String",
+            "GEMINI_API_KEY",
+            "\"AIzaSyCjihBGcOrA7eJUZdRgW-_j92zF_w8rJdw\""
+        )
     }
 
     buildTypes {
@@ -56,7 +67,10 @@ dependencies {
         annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
         implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
+        // Google Gemini AI
+        implementation("com.google.ai.client.generativeai:generativeai:0.4.0")
+
+        implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
     }
-
-
 }

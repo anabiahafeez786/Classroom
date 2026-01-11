@@ -34,6 +34,8 @@
         <activity android:name=".QrScanActivity" />
         <activity android:name=".CustomCaptureActivity" />
 
+        <activity android:name=".ChatActivity" />
+
         <!-- 🚀 SPLASH (LAUNCHER) -->
         <activity
             android:name=".SplashActivity"
