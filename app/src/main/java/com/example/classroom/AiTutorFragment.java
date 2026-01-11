@@ -1,6 +1,8 @@
 package com.example.classroom;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,22 +30,29 @@ import okhttp3.Response;
 public class AiTutorFragment extends Fragment {
 
     private static final String API_KEY = "AIzaSyB86_6mPGPn6RDbzrfMznhQjGgA1g2JZsU";
+
     private static final String API_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=";
 
-    EditText etMessage;
-    ImageButton btnSend;
-    TextView tvResponse;
+    private static final int MAX_RETRIES = 3;
+    private static final int RETRY_DELAY_MS = 2000;
 
-    OkHttpClient client = new OkHttpClient();
+    private EditText etMessage;
+    private ImageButton btnSend;
+    private TextView tvResponse;
+
+    private final OkHttpClient client = new OkHttpClient();
+
+    // ✅ CHAT HISTORY (FIX #1)
+    private final StringBuilder chatHistory = new StringBuilder();
 
     @Nullable
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
-
+            @Nullable Bundle savedInstanceState
+    ) {
         View view = inflater.inflate(R.layout.fragment_ai_tutor, container, false);
 
         etMessage = view.findViewById(R.id.etMessage);
@@ -53,19 +62,27 @@ public class AiTutorFragment extends Fragment {
         btnSend.setOnClickListener(v -> {
             String msg = etMessage.getText().toString().trim();
             if (!msg.isEmpty()) {
-                sendMessage(msg);
+
+                // ✅ SAVE USER MESSAGE
+                chatHistory.append("You: ")
+                        .append(msg)
+                        .append("\n\n");
+
+                tvResponse.setText(chatHistory.toString());
+                scrollToBottom();
+
+                etMessage.setText("");
+                btnSend.setEnabled(false);
+
+                sendRequest(msg, 0);
             }
         });
 
         return view;
     }
 
-    private void sendMessage(String userMessage) {
-
-        tvResponse.setText("Thinking...");
-
+    private void sendRequest(String userMessage, int currentRetryCount) {
         try {
-            // ===== Updated JSON with role =====
             JSONObject textPart = new JSONObject();
             textPart.put("text", userMessage);
 
@@ -73,7 +90,7 @@ public class AiTutorFragment extends Fragment {
             partsArray.put(textPart);
 
             JSONObject contentObj = new JSONObject();
-            contentObj.put("role", "user"); // 🔥 Role is mandatory now
+            contentObj.put("role", "user");
             contentObj.put("parts", partsArray);
 
             JSONArray contentsArray = new JSONArray();
@@ -93,47 +110,92 @@ public class AiTutorFragment extends Fragment {
                     .build();
 
             client.newCall(request).enqueue(new Callback() {
+
                 @Override
-                public void onFailure(Call call, IOException e) {
-                    requireActivity().runOnUiThread(() ->
-                            tvResponse.setText("Error: " + e.getMessage())
-                    );
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    if (!isAdded()) return;
+
+                    requireActivity().runOnUiThread(() -> {
+                        chatHistory.append("AI: Network Error\n\n");
+                        tvResponse.setText(chatHistory.toString());
+                        scrollToBottom();
+                        btnSend.setEnabled(true);
+                    });
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    if (!isAdded()) return;
+
+                    if (response.code() == 503 && currentRetryCount < MAX_RETRIES) {
+                        response.close();
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                        sendRequest(userMessage, currentRetryCount + 1),
+                                RETRY_DELAY_MS
+                        );
+                        return;
+                    }
 
                     String responseBody = response.body().string();
 
                     if (!response.isSuccessful()) {
-                        requireActivity().runOnUiThread(() ->
-                                tvResponse.setText("API Error:\n" + responseBody)
-                        );
+                        requireActivity().runOnUiThread(() -> {
+                            chatHistory.append("AI: API Error\n\n");
+                            tvResponse.setText(chatHistory.toString());
+                            scrollToBottom();
+                            btnSend.setEnabled(true);
+                        });
                         return;
                     }
 
                     try {
                         JSONObject json = new JSONObject(responseBody);
                         JSONArray candidates = json.getJSONArray("candidates");
-                        JSONObject content =
-                                candidates.getJSONObject(0).getJSONObject("content");
-                        JSONArray parts = content.getJSONArray("parts");
-                        String reply = parts.getJSONObject(0).getString("text");
 
-                        requireActivity().runOnUiThread(() ->
-                                tvResponse.setText(reply)
-                        );
+                        if (candidates.length() > 0) {
+                            JSONObject content = candidates.getJSONObject(0).getJSONObject("content");
+                            JSONArray parts = content.getJSONArray("parts");
+                            String reply = parts.getJSONObject(0).getString("text");
+
+                            requireActivity().runOnUiThread(() -> {
+
+                                // ✅ SAVE AI MESSAGE
+                                chatHistory.append("AI: ")
+                                        .append(reply)
+                                        .append("\n\n");
+
+                                tvResponse.setText(chatHistory.toString());
+                                scrollToBottom();
+                                btnSend.setEnabled(true);
+                            });
+                        }
 
                     } catch (Exception e) {
-                        requireActivity().runOnUiThread(() ->
-                                tvResponse.setText("Parse Error:\n" + e.getMessage())
-                        );
+                        requireActivity().runOnUiThread(() -> {
+                            chatHistory.append("AI: Parse Error\n\n");
+                            tvResponse.setText(chatHistory.toString());
+                            scrollToBottom();
+                            btnSend.setEnabled(true);
+                        });
                     }
                 }
             });
 
         } catch (Exception e) {
-            tvResponse.setText("Request Error:\n" + e.getMessage());
+            chatHistory.append("AI: Request Error\n\n");
+            tvResponse.setText(chatHistory.toString());
+            scrollToBottom();
+            btnSend.setEnabled(true);
         }
+    }
+
+    // ✅ AUTO SCROLL (FIX #2)
+    private void scrollToBottom() {
+        tvResponse.post(() -> {
+            View parent = (View) tvResponse.getParent();
+            if (parent != null) {
+                parent.scrollTo(0, tvResponse.getBottom());
+            }
+        });
     }
 }

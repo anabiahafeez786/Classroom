@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -5,6 +7,7 @@
     android:padding="12dp"
     android:background="#F1F3F4">
 
+    <!-- TITLE -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,35 +15,52 @@
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#000000"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:paddingBottom="8dp" />
 
-    <TextView
-        android:id="@+id/tvResponse"
+    <!-- 🔽 SCROLLABLE CHAT AREA -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="Ask me anything…"
-        android:textColor="#000000"
-        android:padding="8dp"/>
+        android:fillViewport="true">
 
+        <TextView
+            android:id="@+id/tvResponse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ask me anything…"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:lineSpacingExtra="6dp"
+            android:padding="8dp" />
+    </ScrollView>
+
+    <!-- INPUT AREA -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
 
         <EditText
             android:id="@+id/etMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Type here"/>
+            android:hint="Type here"
+            android:padding="10dp"
+            android:background="@android:drawable/edit_text"
+            android:textColor="#000000" />
 
         <ImageButton
             android:id="@+id/btnSend"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginStart="6dp"
             android:src="@android:drawable/ic_menu_send"
-            android:background="@android:color/transparent"/>
+            android:contentDescription="Send"
+            android:background="@android:color/transparent" />
     </LinearLayout>
 
 </LinearLayout>
