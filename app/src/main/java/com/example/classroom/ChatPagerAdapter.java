@@ -7,8 +7,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class ChatPagerAdapter extends FragmentStateAdapter {
 
-    public ChatPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
-        super(fragmentActivity);
+    public ChatPagerAdapter(@NonNull FragmentActivity fa) {
+        super(fa);
     }
 
     @NonNull
@@ -17,7 +17,7 @@ public class ChatPagerAdapter extends FragmentStateAdapter {
         if (position == 0) {
             return new AiTutorFragment();
         } else {
-            return new UserChatFragment();
+            return new UserChatFragment(); // ✅ fragment, NOT activity
         }
     }
 

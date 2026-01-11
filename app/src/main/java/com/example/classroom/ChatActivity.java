@@ -10,23 +10,30 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class ChatActivity extends AppCompatActivity {
 
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private ChatPagerAdapter pagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        TabLayout tabLayout = findViewById(R.id.tabLayout);
-        ViewPager2 viewPager = findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
 
-        ChatPagerAdapter adapter = new ChatPagerAdapter(this);
-        viewPager.setAdapter(adapter);
+        // Adapter for fragments
+        pagerAdapter = new ChatPagerAdapter(this);
+        viewPager.setAdapter(pagerAdapter);
 
+        // Attach tabs with ViewPager
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
-                    if (position == 0)
+                    if (position == 0) {
                         tab.setText("AI Tutor");
-                    else
-                        tab.setText("Chat");
+                    } else {
+                        tab.setText("User Chat");
+                    }
                 }
         ).attach();
     }
